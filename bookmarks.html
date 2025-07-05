@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bookmarks | BookNest</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo">Readsy <a href="index.html"></a></div>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="index.html#featured">Featured</a>
+      <a href="index.html#genres">Genres</a>
+      <a href="#" class="active">Bookmarks</a>
+    </div>
+    <div class="auth-buttons">
+      <button id="login-btn" class="btn btn-outline">Login</button>
+      <button id="signup-btn" class="btn btn-primary">Sign Up</button>
+      <button id="logout-btn" class="btn btn-outline" style="display: none;">Logout</button>
+    </div>
+  </nav>
+
+  <section class="section">
+    <h2 class="section-title">Your Bookmarked Books</h2>
+    <div class="books-grid" id="books-container">
+      <!-- Bookmarked books will be rendered here -->
+    </div>
+  </section>
+<section class="section">
+    <h2 class="section-title">Your Bookmarked Books</h2>
+    <div class="books-grid" id="books-container">
+      <div class="loading-state">
+        <i class="fas fa-spinner fa-spin"></i>
+        <p>Loading your bookmarks...</p>
+      </div>
+    </div>
+  </section>
+  <div id="login-modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Login to Your Account</h2>
+      <form id="login-form">
+        <div class="form-group">
+          <input type="email" id="login-email" placeholder="Email" required />
+          <i class="fas fa-envelope"></i>
+        </div>
+        <div class="form-group">
+          <input type="password" id="login-password" placeholder="Password" required />
+          <i class="fas fa-lock"></i>
+        </div>
+        <button type="submit" class="btn btn-primary">Login</button>
+      </form>
+      <div class="auth-footer">
+        <p>Don't have an account? <a href="#" id="show-signup">Sign up</a></p>
+      </div>
+    </div>
+  </div>
+
+  <div id="signup-modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Create Your Account</h2>
+      <form id="signup-form">
+        <div class="form-group">
+          <input type="text" id="signup-name" placeholder="Full Name" required />
+          <i class="fas fa-user"></i>
+        </div>
+        <div class="form-group">
+          <input type="email" id="signup-email" placeholder="Email" required />
+          <i class="fas fa-envelope"></i>
+        </div>
+        <div class="form-group">
+          <input type="password" id="signup-password" placeholder="Password" required />
+          <i class="fas fa-lock"></i>
+        </div>
+        <button type="submit" class="btn btn-primary">Sign Up</button>
+      </form>
+      <div class="auth-footer">
+        <p>Already have an account? <a href="#" id="show-login">Login</a></p>
+      </div>
+    </div>
+  </div>
+
+  <div id="book-modal" class="modal">
+    <div class="modal-content book-details">
+      <span class="close">&times;</span>
+      <div class="book-modal-content"></div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <script src="script.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCYgrVmfFDMm2gAwB1o2rg7jsJCqtBTOVA",
+      authDomain: "book-website-3d3f1.firebaseapp.com",
+      projectId: "book-website-3d3f1",
+      storageBucket: "book-website-3d3f1.firebasestorage.app",
+      messagingSenderId: "64124055853",
+      appId: "1:64124055853:web:b44d8e52a4b369a81ca3a4"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // Toast notification function
+    function showToast(message, duration = 3000) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.style.display = 'block';
+      setTimeout(() => toast.style.display = 'none', duration);
+    }
+
+    // Book details modal function
+    function showBookDetails(book) {
+      const modal = document.getElementById('book-modal');
+      const modalContent = document.querySelector('.book-modal-content');
+      
+      modalContent.innerHTML = `
+        <div class="book-modal-cover">
+          <img src="${book.cover}" alt="${book.title}">
+        </div>
+        <div class="book-modal-info">
+          <h2 class="book-modal-title">${book.title}</h2>
+          <p class="book-modal-author">by ${book.author}</p>
+          <div class="book-modal-meta">
+            <span><i class="fas fa-book-open"></i> ${book.pages || 'N/A'} pages</span>
+            <span><i class="fas fa-star"></i> ${book.rating || 'N/A'}/5</span>
+            <span><i class="fas fa-tag"></i> ${book.genre || 'General'}</span>
+          </div>
+          <p class="book-modal-description">${book.description}</p>
+          <div class="book-modal-actions">
+            <button class="btn btn-primary read-online-btn">
+              <i class="fas fa-book-reader"></i> Read Online
+            </button>
+            <button class="bookmark-btn active" onclick="toggleBookmark('${book.id}', this)">
+              <i class="fas fa-bookmark"></i> Bookmarked
+            </button>
+          </div>
+        </div>
+      `;
+      
+      modal.querySelector('.read-online-btn').addEventListener('click', () => {
+        if (book.bookUrl) {
+          window.open(book.bookUrl, '_blank');
+        } else {
+          showToast("This book doesn't have a PDF link.");
+        }
+      });
+      
+      modal.style.display = 'block';
+    }
+
+    // Bookmark toggle function
+    async function toggleBookmark(bookId, button) {
+      const user = auth.currentUser;
+      if (!user) {
+        showToast("Please login to manage bookmarks");
+        return;
+      }
+
+      try {
+        const userDoc = await db.collection('users').doc(user.uid).get();
+        const currentBookmarks = userDoc.data().bookmarks || [];
+        const newBookmarks = currentBookmarks.includes(bookId)
+          ? currentBookmarks.filter(id => id !== bookId)
+          : [...currentBookmarks, bookId];
+
+        await db.collection('users').doc(user.uid).update({
+          bookmarks: newBookmarks
+        });
+
+        if (currentBookmarks.includes(bookId)) {
+          button.innerHTML = '<i class="fas fa-bookmark"></i> Bookmark';
+          button.classList.remove('active');
+          showToast("Book removed from bookmarks");
+          // Remove from UI
+          document.querySelector(`.book-card[data-id="${bookId}"]`)?.remove();
+        } else {
+          button.innerHTML = '<i class="fas fa-bookmark"></i> Bookmarked';
+          button.classList.add('active');
+          showToast("Book added to bookmarks");
+        }
+      } catch (error) {
+        console.error("Error updating bookmark:", error);
+        showToast("Error updating bookmark");
+      }
+    }
+
+    // Load bookmarked books
+    async function loadBookmarkedBooks(bookmarkIds) {
+      const chunkSize = 10;
+      const chunks = [];
+      
+      for (let i = 0; i < bookmarkIds.length; i += chunkSize) {
+        chunks.push(bookmarkIds.slice(i, i + chunkSize));
+      }
+      
+      const bookPromises = chunks.map(chunk => 
+        db.collection('books')
+          .where(firebase.firestore.FieldPath.documentId(), 'in', chunk)
+          .get()
+      );
+      
+      const snapshots = await Promise.all(bookPromises);
+      return snapshots.flatMap(snapshot => 
+        snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+      );
+    }
+    // Main initialization
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Check auth state
+      auth.onAuthStateChanged(async (user) => {
+        if (!user) {
+          window.location.href = "index.html";
+          return;
+        }
+
+        try {
+          // Get user data
+          const userDoc = await db.collection('users').doc(user.uid).get();
+          const bookmarks = userDoc.data()?.bookmarks || [];
+          
+          if (bookmarks.length === 0) {
+            document.getElementById('books-container').innerHTML = `
+              <div class="empty-state">
+                <i class="fas fa-bookmark"></i>
+                <p>You don't have any bookmarked books yet.</p>
+              </div>
+            `;
+            return;
+          }
+
+          // Load bookmarked books
+          const books = await loadBookmarkedBooks(bookmarks);
+          renderBookmarkedBooks(books);
+        } catch (error) {
+          console.error("Error loading bookmarks:", error);
+          showToast("Error loading your bookmarks");
+        }
+      });
+    });
+
+    // Render bookmarked books
+    function renderBookmarkedBooks(books) {
+      const container = document.getElementById('books-container');
+      
+      if (books.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-bookmark"></i>
+            <p>You don't have any bookmarked books yet.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = books.map(book => `
+        <div class="book-card" data-id="${book.id}" onclick="showBookDetails(${JSON.stringify(book)})">
+          <img src="${book.cover}" alt="${book.title}" class="book-cover">
+          <div class="book-info">
+            <h3 class="book-title">${book.title}</h3>
+            <p class="book-author">${book.author}</p>
+            <div class="book-actions">
+              <button class="btn btn-outline read-btn">Read</button>
+              <button class="bookmark-btn active" onclick="event.stopPropagation(); toggleBookmark('${book.id}', this)">
+                <i class="fas fa-bookmark"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      // Add read button event listeners
+      document.querySelectorAll('.read-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const bookCard = e.target.closest('.book-card');
+          const bookId = bookCard.dataset.id;
+          const book = books.find(b => b.id === bookId);
+          if (book?.bookUrl) {
+            window.open(book.bookUrl, '_blank');
+          } else {
+            showToast("This book doesn't have a PDF link.");
+          }
+        });
+      });
+    }
+  </script>
+</body>
+</html>

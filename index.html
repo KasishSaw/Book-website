@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BookNest | Your Personal Library</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="logo">Readsy <a href="index.html"></a></div>
+      <div class="nav-links">
+        <a href="#" class="active">Home</a>
+        <a href="#featured">Featured</a>
+        <a href="#genres">Genres</a>
+        <a href="#" id="bookmarks-link">Bookmarks</a>
+      </div>
+      <div class="auth-buttons">
+        <button id="login-btn" class="btn btn-outline">Login</button>
+        <button id="signup-btn" class="btn btn-primary">Sign Up</button>
+        <button id="logout-btn" class="btn btn-outline" style="display: none;">Logout</button>
+
+      </div>
+    </nav>
+
+    <section class="hero">
+      <div class="hero-content">
+        <h1>Discover Your Next</h1>
+        <h1>Favorite Book</h1>
+        <p>
+          Thousands of books waiting to be explored. Read, bookmark, and review
+          - all for free.
+        </p>
+        <div class="search-bar">
+          <input
+            type="text"
+            id="search-input"
+            placeholder="Search for books, authors, or genres..."
+          />
+          <button id="search-btn"><i class="fas fa-search"></i></button>
+        </div>
+      </div>
+
+      <div class="book-carousel">
+        <div class="carousel-container">
+          <div class="carousel-slide active">
+            <img
+              src="https://i.pinimg.com/736x/2f/93/30/2f9330c1cd36a355204d068b984ba491.jpg"
+              alt="Book 1"
+            />
+          </div>
+          <div class="carousel-slide">
+            <img
+              src="https://i.pinimg.com/736x/b8/b3/90/b8b39001705c2726e5f97c6ab97aa9de.jpg"
+              alt="Book 2"
+            />
+          </div>
+          <div class="carousel-slide">
+            <img
+              src="https://i.pinimg.com/736x/f1/31/c5/f131c545376e2d6ce9563e7e4bb8d63d.jpg"
+              alt="Book 3"
+            />
+          </div>
+          <div class="carousel-slide">
+            <img
+              src="https://i.pinimg.com/736x/a2/f1/ac/a2f1ac4c7001cb25f2d6fbbc33e79e48.jpg"
+              alt="Book 4"
+            />
+          </div>
+        </div>
+        <div class="carousel-dots">
+          <span class="dot active"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+        </div>
+      </div>
+    </section>
+
+    <section id="featured" class="section">
+      <h2 class="section-title">Featured Books</h2>
+      <div class="books-grid" id="books-container">
+      </div>
+    </section>
+
+    <section id="genres" class="section">
+      <h2 class="section-title">Explore Genres</h2>
+      <div class="genre-cards" id="genres-container">
+      </div>
+    </section>
+
+    <section class="community-writings section">
+      <div class="container">
+        <h2 class="section-title">Community Writings</h2>
+        <div class="writings-header">
+          <button id="submit-writing-btn" class="btn btn-primary">
+            <i class="fas fa-pen-alt"></i> Submit Your Writing
+          </button>
+        </div>
+
+        <div class="writings-center-container" id="writings-container">
+        </div>
+      </div>
+    </section>
+
+    <div id="writing-modal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <div id="auth-check">
+        </div>
+      </div>
+    </div>
+
+    <section class="quote-section">
+      <blockquote>
+        "A reader lives a thousand lives before he dies. The man who never reads
+        lives only one."
+        <cite>- George R.R. Martin</cite>
+      </blockquote>
+    </section>
+
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-about">
+          <h3>BookNest</h3>
+          <p>
+            Your personal library in the cloud. Discover, read, and bookmark
+            your favorite books for free.
+          </p>
+        </div>
+        <div class="footer-links">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#featured">Featured</a></li>
+            <li><a href="#genres">Genres</a></li>
+            <li><a href="#">Bookmarks</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2023 BookNest. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <div id="login-modal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Login to Your Account</h2>
+        <form id="login-form">
+          <div class="form-group">
+            <input type="email" id="login-email" placeholder="Email" required />
+            <i class="fas fa-envelope"></i>
+          </div>
+          <div class="form-group">
+            <input
+              type="password"
+              id="login-password"
+              placeholder="Password"
+              required
+            />
+            <i class="fas fa-lock"></i>
+          </div>
+          <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+        <div class="auth-footer">
+          <p>Don't have an account? <a href="#" id="show-signup">Sign up</a></p>
+          <a href="#" class="forgot-password">Forgot password?</a>
+        </div>
+      </div>
+    </div>
+
+    <div id="signup-modal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Create Your Account</h2>
+        <form id="signup-form">
+          <div class="form-group">
+            <input
+              type="text"
+              id="signup-name"
+              placeholder="Full Name"
+              required
+            />
+            <i class="fas fa-user"></i>
+          </div>
+          <div class="form-group">
+            <input
+              type="email"
+              id="signup-email"
+              placeholder="Email"
+              required
+            />
+            <i class="fas fa-envelope"></i>
+          </div>
+          <div class="form-group">
+            <input
+              type="password"
+              id="signup-password"
+              placeholder="Password"
+              required
+            />
+            <i class="fas fa-lock"></i>
+          </div>
+          <button type="submit" class="btn btn-primary">Sign Up</button>
+        </form>
+        <div class="auth-footer">
+          <p>Already have an account? <a href="#" id="show-login">Login</a></p>
+          <p class="terms">
+            By signing up, you agree to our <a href="#">Terms</a> and
+            <a href="#">Privacy Policy</a>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div id="book-modal" class="modal">
+      <div class="modal-content book-details">
+        <span class="close">&times;</span>
+        <div class="book-modal-content">
+        </div>
+      </div>
+    </div>
+    <div id="toast" class="toast"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+
+    <script src="script.js"></script>
+  </body>
+</html>
