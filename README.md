@@ -1,2 +1,2 @@
 # Book-website
-Book website
+Readsy is a modern and interactive online reading platform built using HTML, CSS, JavaScript, and Firebase. It allows users to explore, read, and bookmark a curated collection of books across genres like Fiction, Romance, Mystery, and Fantasy. With secure user authentication via Firebase, readers can create accounts, log in, and manage their personalized library of bookmarked books. Features include online reading, PDF downloads, genre filtering, and a section for community-submitted writings. Designed with a clean user interface and real-time Firestore integration, Readsy delivers a seamless and personalized digital library experience.
